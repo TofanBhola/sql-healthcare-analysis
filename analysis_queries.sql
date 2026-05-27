@@ -71,3 +71,77 @@ LIMIT 10;
 -- Finding: Hematology/Oncology (17.89%) and Nephrology (15.38%) lead readmissions
 -- High-volume specialties like Internal Medicine manage volume with lower rates (11.35%)
 -- Chronic disease specialties carry highest readmission burden
+
+-- Q6: Do more medications correlate with higher readmission rates?
+-- Q6: Do more medications correlate with higher readmission rates?
+
+SELECT 
+    num_medications,
+    COUNT(*) AS total_patients,
+    ROUND(SUM(CASE WHEN readmitted = '<30' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS readmission_rate_pct
+FROM github.diabetic_data
+GROUP BY num_medications
+HAVING COUNT(*) > 100
+ORDER BY num_medications ASC;
+-- Finding: Strong positive correlation between medication count and readmission rate
+-- 1 medication: 4.56% readmission vs 35 medications: 17.39%
+-- Number of medications is a strong proxy for patient complexity
+
+-- Q7: Does HbA1c test result impact readmission rates?
+SELECT 
+    A1Cresult,
+    COUNT(*) AS total_patients,
+    ROUND(SUM(CASE WHEN readmitted = '<30' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS readmission_rate_pct
+FROM github.diabetic_data
+GROUP BY A1Cresult
+ORDER BY readmission_rate_pct DESC;
+-- Finding: Patients with no HbA1c test recorded have highest readmission rate (11.43%)
+-- Patients tested — even with abnormal results — show lower readmission rates (9.68-10.03%)
+-- Interpretation: Lack of diabetes monitoring is itself a readmission risk factor
+-- Clinical implication: Routine HbA1c testing may reduce unnecessary readmissions
+
+-- Q8: Which discharge destination leads to highest readmission?
+SELECT 
+    discharge_disposition_id,
+    COUNT(*) AS total_patients,
+    ROUND(SUM(CASE WHEN readmitted = '<30' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS readmission_rate_pct
+FROM github.diabetic_data
+GROUP BY discharge_disposition_id
+HAVING COUNT(*) > 100
+ORDER BY readmission_rate_pct DESC
+LIMIT 10;
+-- Finding: Psychiatric (40%) and rehab facility (27.49%) discharges have highest readmission rates
+-- Patients not discharged home are already complex, high-risk cases
+-- Discharge destination is a strong readmission predictor
+
+-- Q9: Does insulin medication change impact readmission?
+
+SELECT 
+    insulin,
+    COUNT(*) AS total_patients,
+    ROUND(SUM(CASE WHEN readmitted = '<30' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS readmission_rate_pct
+FROM github.diabetic_data
+GROUP BY insulin
+ORDER BY readmission_rate_pct DESC;
+-- Finding: Insulin dose changes (up or down) correlate with higher readmission rates
+-- Down: 13.89%, Up: 13.09% vs Steady: 11.25%, No insulin: 9.99%
+-- Interpretation: Insulin adjustments signal unstable diabetes control = higher readmission risk
+
+-- Q10: Multi-factor readmission risk summary
+-- Combining age, insulin change, and medication count
+
+SELECT 
+    age,
+    insulin,
+    ROUND(AVG(num_medications), 1) AS avg_medications,
+    COUNT(*) AS total_patients,
+    ROUND(SUM(CASE WHEN readmitted = '<30' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS readmission_rate_pct
+FROM github.diabetic_data
+GROUP BY age, insulin
+HAVING COUNT(*) > 50
+ORDER BY readmission_rate_pct DESC
+LIMIT 15;
+-- Finding: Young patients (20-30) with insulin changes show highest readmission risk (21.56%)
+-- Insulin instability is dangerous across ALL age groups
+-- Higher avg medications in older groups confirms complexity increases with age
+-- This multi-factor view identifies the highest-risk patient profiles in the dataset
