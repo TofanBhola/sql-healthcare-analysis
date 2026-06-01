@@ -93,7 +93,7 @@ sql-healthcare-analysis/
 │
 ├── README.md               ← You are here
 ├── data/
-│   └── dataset_info.md     ← Dataset description (raw data not uploaded due to size)
+│   └── diabetic_data.csv    ← Dataset 
 └── queries/
     ├── 01_age_analysis.sql
     ├── 02_race_analysis.sql
