@@ -91,20 +91,9 @@ These findings can help hospital administrators and clinical teams:
 ```
 sql-healthcare-analysis/
 │
-├── README.md               ← You are here
-├── data/
-│   └── diabetic_data.csv    ← Dataset 
-└── queries/
-    ├── 01_age_analysis.sql
-    ├── 02_race_analysis.sql
-    ├── 03_diagnosis_analysis.sql
-    ├── 04_hospital_stay.sql
-    ├── 05_specialty_analysis.sql
-    ├── 06_medication_count.sql
-    ├── 07_hba1c_testing.sql
-    ├── 08_discharge_analysis.sql
-    ├── 09_insulin_analysis.sql
-    └── 10_multifactor_analysis.sql
+├── README.md
+├── diabetic_data.csv
+└── analysis_queries.sql
 ```
 
 ---
@@ -120,6 +109,6 @@ sql-healthcare-analysis/
 ## 👤 Author
 
 **Tofan Kumar Bhola**
-[LinkedIn](https://www.linkedin.com/in/tofan-kumar-bhola) · [GitHub](https://github.com/your-username)
+[LinkedIn](https://www.linkedin.com/in/tofan-kumar-bhola) · [GitHub](https://github.com/tofanbhola)
 
 > *"I don't just run models — I understand the operational problems they're meant to solve."*
